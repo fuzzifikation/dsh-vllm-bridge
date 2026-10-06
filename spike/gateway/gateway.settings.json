@@ -1,0 +1,69 @@
+{
+  "_comment": [
+    "Spike settings: the INDEPENDENT settings file the gateway thesis needs.",
+    "Same shape as the copilot registry ({servers, models}) because core consumes exactly that.",
+    "No secrets in this repo: server request headers are resolved at boot from the",
+    "local snapshot file named by secretsSourceSnapshot (a real gateway would own a",
+    "secrets file with the same ServerEntry shape). %APPDATA% / %USERPROFILE% expand at load."
+  ],
+  "port": 8787,
+  "host": "127.0.0.1",
+  "token": "spike-token-8f3a",
+  "corePath": "%APPDATA%\\Code\\User\\globalStorage\\system-sciences.dsh-vllm-bridge\\dsh-home\\profiles\\vllmc\\node_modules\\vllm-copilot-core\\core\\index.js",
+  "secretsSourceSnapshot": "%APPDATA%\\Code\\User\\globalStorage\\system-sciences.dsh-vllm-bridge\\dsh-home\\vllmc\\snapshot.json",
+  "personalityDirs": {
+    "globalDir": "%APPDATA%\\Code\\User\\globalStorage\\System-Sciences.vllm-copilot\\personalities",
+    "bundledDir": "%USERPROFILE%\\.vscode\\extensions\\system-sciences.vllm-copilot-1.37.1-rc0\\prompt-replacements"
+  },
+  "systemMessageCapture": true,
+  "captureFile": "system-messages.json",
+  "registry": {
+    "servers": [
+      { "id": "vllm-unifiedmixers-org", "serverUrl": "https://vllm.unifiedmixers.org" }
+    ],
+    "models": [
+      {
+        "id": "Qwen3.8-Flash-Next",
+        "vllmModelId": "Qwen/Qwen3.8-Flash-Next-FP8",
+        "displayName": "Qwen3.8-Flash-Next",
+        "family": "qwen4_exp",
+        "server": "vllm-unifiedmixers-org",
+        "personality": "Sarcastic Robot",
+        "maxOutputTokens": [32768, 16384, 8192],
+        "capabilities": { "toolCalling": true, "imageInput": true },
+        "modelModes": {
+          "Think (Deep)": {
+            "chat_template_kwargs": { "enable_thinking": true, "preserve_thinking": true },
+            "reasoning_effort": "xhigh",
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 20,
+            "min_p": 0,
+            "presence_penalty": 0,
+            "repetition_penalty": 1
+          },
+          "Think (Balanced)": {
+            "chat_template_kwargs": { "enable_thinking": true, "preserve_thinking": true },
+            "reasoning_effort": "medium",
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 20,
+            "min_p": 0,
+            "presence_penalty": 0,
+            "repetition_penalty": 1
+          },
+          "No Think": {
+            "chat_template_kwargs": { "enable_thinking": false },
+            "temperature": 0.7,
+            "top_p": 0.8,
+            "top_k": 20,
+            "min_p": 0,
+            "presence_penalty": 1.5,
+            "repetition_penalty": 1
+          }
+        },
+        "defaultMode": "No Think"
+      }
+    ]
+  }
+}

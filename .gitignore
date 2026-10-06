@@ -8,3 +8,5 @@ temp/
 .dsh/
 .dsh-acl-recovery/
 .DS_Store
+# spike runtime output (capture file written by spike/gateway/gateway.mjs)
+spike/gateway/system-messages.json
