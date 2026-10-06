@@ -1,0 +1,23 @@
+# What the VSIX must NOT carry. Staging, tests, rails and sources are dev
+# material; the shipped extension is out/, shared/, plugin/, config/,
+# CHANGELOG.md and LICENSE. Docs stay out except the images subtree, which
+# carries the Marketplace icon (docs/* + re-include: a whole excluded folder
+# can never be re-entered, its children can).
+.vscode-test/
+.vllm/
+out-e2e/
+temp/
+node_modules/
+src/
+test/
+scripts/
+tsconfig.json
+package-lock.json
+docs/*
+!docs/images/
+!docs/images/**
+**/*.map
+**/*.d.mts
+**/*.ts
+.git/
+.github/

@@ -1,0 +1,18 @@
+{
+  // Extension-host E2E: compiled separately from the vitest tree. These run
+  // INSIDE a real VS Code against the real `vscode` module, so they must not
+  // be part of the src build nor picked up by vitest (which only globs
+  // *.test.* files). ESM is fine: the test-cli runner loads ESM test files
+  // through Node's require(esm) path. The runner's mocha ui MUST be stated as
+  // 'bdd' in .vscode-test.mjs, or a bdd file dies with "describe is not
+  // defined" and reads like an ESM loader bug (learned the loud way).
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "../../out-e2e",
+    "types": ["node", "vscode", "mocha"],
+    "noEmit": false,
+    "sourceMap": true
+  },
+  "include": ["./**/*.ts"]
+}

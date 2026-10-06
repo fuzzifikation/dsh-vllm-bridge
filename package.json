@@ -1,0 +1,184 @@
+{
+  "name": "dsh-vllm-bridge",
+  "displayName": "DeepSeek Harness Bridge (vLLM, local)",
+  "version": "0.0.15",
+  "type": "module",
+  "description": "Runs the DeepSeek Harness (dsh) entirely on your vLLM-Copilot registry: your models, your servers, your token totals, no DeepSeek account.",
+  "license": "MIT",
+  "author": "Dieter Schwarzmann <info@systemwissenschaften.de>",
+  "publisher": "System-Sciences",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fuzzifikation/dsh-vllm-bridge"
+  },
+  "bugs": {
+    "url": "https://github.com/fuzzifikation/dsh-vllm-bridge/issues"
+  },
+  "homepage": "https://github.com/fuzzifikation/dsh-vllm-bridge",
+  "changelog": "https://github.com/fuzzifikation/dsh-vllm-bridge/blob/main/CHANGELOG.md",
+  "sponsor": {
+    "url": "https://paypal.me/DieterSchwarzmann"
+  },
+  "engines": {
+    "vscode": "^1.140.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "keywords": [
+    "deepseek",
+    "dsh",
+    "harness",
+    "vllm",
+    "openrouter",
+    "copilot",
+    "self-hosted",
+    "local-llm",
+    "llm",
+    "local",
+    "agent",
+    "agents"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "extensionDependencies": [
+    "System-Sciences.vllm-copilot"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "dshBridge.start",
+        "title": "Start Harness",
+        "category": "DSH Bridge"
+      },
+      {
+        "command": "dshBridge.stop",
+        "title": "Stop Harness",
+        "category": "DSH Bridge"
+      },
+      {
+        "command": "dshBridge.restart",
+        "title": "Restart Harness (drains in-flight requests)",
+        "category": "DSH Bridge"
+      },
+      {
+        "command": "dshBridge.open",
+        "title": "Open Harness",
+        "category": "DSH Bridge",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "dshBridge.showLogs",
+        "title": "Show Harness Logs",
+        "category": "DSH Bridge"
+      },
+      {
+        "command": "dshBridge.report",
+        "title": "Show Bridge Status",
+        "category": "DSH Bridge"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "dshBridge.start", "when": "dshBridge.ownerAvailable && !dshBridge.running" },
+        { "command": "dshBridge.stop", "when": "dshBridge.ownerAvailable && dshBridge.running" },
+        { "command": "dshBridge.restart", "when": "dshBridge.ownerAvailable && dshBridge.running" },
+        { "command": "dshBridge.open", "when": "dshBridge.ownerAvailable && dshBridge.running" }
+      ]
+    },
+    "configuration": {
+      "title": "DeepSeek Harness Bridge",
+      "properties": {
+        "dsh-bridge.autoStart": {
+          "type": "boolean",
+          "default": true,
+          "description": "Launch the harness once the vLLM-Copilot registry is available."
+        },
+        "dsh-bridge.dshVersion": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Run a specific `@deepseek-ai/dsh` version instead of the one this bridge was certified against. Accepts `latest` or an exact version like `0.2.0-rc.2`; anything else is ignored. Leave empty unless you are testing a new release: dsh's semver is decorative and an uncertified version can change its config rows under us."
+        },
+        "dsh-bridge.defaultModelId": {
+          "type": "string",
+          "default": "",
+          "description": "Registry model id the harness should use by default. Empty uses the first configured model."
+        },
+        "dsh-bridge.titleModel": {
+          "type": "string",
+          "default": "",
+          "description": "Registry model id for session-title calls. Empty uses the default model."
+        },
+        "dsh-bridge.titleMaxTokens": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Output cap for session-title calls. 0 leaves it to the model's own limit."
+        },
+        "dsh-bridge.compactionModel": {
+          "type": "string",
+          "default": "",
+          "description": "Registry model id for context-compaction calls. Empty uses the default model."
+        },
+        "dsh-bridge.compactionMaxTokens": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Output cap for context-compaction calls. 0 leaves it to the model's own limit."
+        },
+        "dsh-bridge.openIn": {
+          "type": "string",
+          "enum": [
+            "embedded",
+            "external"
+          ],
+          "default": "embedded",
+          "markdownDescription": "Where the harness UI opens. `embedded` docks it in an editor tab via the built-in browser view (VS Code's Browser area, with its toolbar; falls back to the system browser when the build provides none); `external` always uses the system browser."
+        },
+        "dsh-bridge.drainTimeoutSeconds": {
+          "type": "number",
+          "default": 120,
+          "minimum": 0,
+          "description": "How long a restart waits for in-flight harness requests to finish before stopping the harness anyway. 0 restarts immediately and cuts live requests."
+        },
+        "dsh-bridge.ingestIntervalSeconds": {
+          "type": "number",
+          "default": 10,
+          "minimum": 2,
+          "description": "How often completed harness requests are folded into the vLLM-Copilot usage ledger."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p tsconfig.json",
+    "build": "npm run compile && vsce package",
+    "watch": "tsc -w -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "stage:core": "node scripts/stage-core.mjs",
+    "boot:check": "node scripts/stage-core.mjs && node scripts/step2-boot-check.mjs",
+    "test:e2e:compile": "node -e \"require('node:fs').rmSync('out-e2e',{recursive:true,force:true})\" && tsc -p test/e2e/tsconfig.json",
+    "test:e2e": "npm run compile && npm run test:e2e:compile && node scripts/e2e-stand-in.mjs && node -e \"require('node:fs').mkdirSync('temp/e2e-workspace',{recursive:true})\" && node node_modules/@vscode/test-cli/out/bin.mjs",
+    "bridge:check": "tsc -p tsconfig.json && node scripts/stage-core.mjs && node scripts/step3-bridge-check.mjs",
+    "dsh:fresh": "node scripts/dsh-fresh.mjs",
+    "test": "tsc -p tsconfig.json && vitest run"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.6.4",
+    "@types/vscode": "^1.140.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "typescript": "^7.0.2",
+    "vitest": "^3.2.4"
+  }
+}

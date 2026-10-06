@@ -2,7 +2,7 @@
 
 Run the [DeepSeek Harness](https://www.npmjs.com/package/@deepseek-ai/dsh) (dsh) agent loop entirely on your own vLLM or OpenRouter servers. No DeepSeek account, no credential setup, no vendor login. Your models come from your [vLLM-Copilot](https://github.com/fuzzifikation/vLLM-Copilot) registry, already configured and working in VS Code.
 
-You install the extension. It supervises `npx @deepseek-ai/dsh web` with a dedicated `DSH_HOME`, installs the adapter plugin from this repo into it, and writes a snapshot of your vLLM-Copilot registry (servers, models, modes, sampling params, headers, output budgets). Inside the dsh process, the plugin implements dsh-llm's `LlmAdapter` contract and routes every generation through the vLLM-Copilot core, so your model configs, personalities, and usage accounting apply to harness traffic too. dsh itself stays 100% upstream, never forked.
+You install the extension. It installs a pinned `@deepseek-ai/dsh` into a private runtime directory (`npx` was rejected: a Windows `.cmd` shim handing you whatever version it feels like), supervises `dsh web` with a dedicated `DSH_HOME`, installs the adapter plugin from this repo into it, and writes a snapshot of your vLLM-Copilot registry (servers, models, modes, sampling params, headers, output budgets). Inside the dsh process, the plugin implements dsh-llm's `LlmAdapter` contract and routes every generation through the vLLM-Copilot core, so your model configs, personalities, and usage accounting apply to harness traffic too. dsh itself stays 100% upstream, never forked.
 
 ## What lives in this repo
 
@@ -13,13 +13,13 @@ You install the extension. It supervises `npx @deepseek-ai/dsh web` with a dedic
 
 ## Requirements
 
-- Node.js 20+ (npx must work)
+- Node.js 22+ with `npm` on PATH (the extension installs the pinned harness with it; dsh's own packages require Node 22)
 - The [vLLM-Copilot](https://github.com/fuzzifikation/vLLM-Copilot) extension with at least one working server and model
 
 ## Status
 
-Pre-alpha scaffolding. The design law for this repo (architecture, owner rulings, verification gates) lives in [`docs/dsh-bridge-plan.md`](https://github.com/fuzzifikation/vLLM-Copilot/blob/main/docs/dsh-bridge-plan.md) in the vLLM-Copilot repository.
+Pre-alpha (0.0.x), one developer. The loop works end to end: your registry becomes the harness's model list, models your servers stopped serving are hidden, the harness opens as a tab inside VS Code, the agent can call editor tools (diagnostics, open files and diffs, terminal commands, questions back to you), and harness traffic lands in the vLLM-Copilot usage ledger. Windows is the tested platform; others are untested. The design law for this repo (architecture, owner rulings, verification gates) lives in [`docs/dsh-bridge-plan.md`](https://github.com/fuzzifikation/vLLM-Copilot/blob/main/docs/dsh-bridge-plan.md) in the vLLM-Copilot repository.
 
 ## License
 
-MIT. May contain code derived from [`Jager/dsh-vscode`](https://github.com/NEXTINDIE/DeepSeek-Harness-for-VS-Code) (MIT), attribution kept in `THIRD-PARTY-NOTICES.txt`.
+MIT. Contains no code from other projects; if that ever changes, attribution lands in `THIRD-PARTY-NOTICES.txt`.
