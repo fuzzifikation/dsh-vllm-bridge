@@ -7,7 +7,7 @@ Companion to [vLLM-Copilot](https://github.com/fuzzifikation/vLLM-Copilot). Two 
 
 ## Law and plans
 
-- **Design law** (architecture mermaid, six owner rulings, adapter contract, verification gates 1-5, spike-verified dsh facts): [`docs/dsh-bridge-plan.md` in vLLM-Copilot](https://github.com/fuzzifikation/vLLM-Copilot/blob/main/docs/dsh-bridge-plan.md). Read it before designing anything; it is upstream truth, this repo implements it.
+- **Design law** (architecture mermaid, six owner rulings, adapter contract, verification gates 1-5, spike-verified dsh facts): [docs/dsh-bridge-plan.md](../docs/dsh-bridge-plan.md). Read it before designing anything; it is the repo's own law since 2026-10-08.
 - **Executable plan and current status**: [docs/plan.md](../docs/plan.md). Work from it; update its status line as units move.
 
 ## Standing rulings (do not re-propose around them)
